@@ -1,0 +1,44 @@
+\documentclass[UTF8,oneside,fontset=mac]{pkuthss}
+\usepackage[backend = biber, style = gb7714-2015ay, url=false,gbtitlelink=true]{biblatex}
+\usepackage{longtable,multirow,booktabs}
+\usepackage{float,caption}
+\usepackage{fontspec}
+\renewcommand*{\bibfont}{\zihao{5}\linespread{1.27}\selectfont}
+\setlength{\bibitemsep}{3bp}
+\newif\ifblind\blindfalse
+\pkuthssinfo{
+	cthesisname = {硕士学位论文}, ethesisname = {Master Thesis},
+	thesiscover = {硕士学位论文},
+	ctitle = {家财险},
+	etitle = {},
+	cauthor = {董晨阳}, eauthor = {Ernest Dong}, date = {\today},
+	studentid = {2201211201}, school = {经济学院},
+	cmajor = {保险学}, emajor = {Risk Management and Insurance},
+	direction = {}, mentorlines = {1},
+	cmentor = {刘新立},
+	ementor = {Xinli Liu},
+	ckeywords = {},
+	ekeywords = {},
+}
+\addbibresource{thesis.bib}
+\newtheorem{hyp}{H}
+\begin{document}
+\frontmatter
+\pagestyle{empty}
+\maketitle
+\clearpage
+\include{chap/copy}
+\clearpage
+\pagestyle{plain}
+\setcounter{page}{0}
+\pagenumbering{Roman}
+\include{chap/abs}
+\tableofcontents
+\mainmatter
+\appendix
+\printbibliography[heading = bibintoc]
+\include{chap/encl1}
+\backmatter
+\include{chap/ack}
+\include{chap/origin}
+\end{document}
