@@ -9,8 +9,8 @@
 \pkuthssinfo{
 	cthesisname = {硕士学位论文}, ethesisname = {Master Thesis},
 	thesiscover = {硕士学位论文},
-	ctitle = {家财险},
-	etitle = {},
+	ctitle = {气候变化对家财险需求影响},
+	etitle = {Impact of Climate Change on Household Property Insurance Demand},
 	cauthor = {董晨阳}, eauthor = {Ernest Dong}, date = {\today},
 	studentid = {2201211201}, school = {经济学院},
 	cmajor = {保险学}, emajor = {Risk Management and Insurance},
@@ -27,18 +27,20 @@
 \pagestyle{empty}
 \maketitle
 \clearpage
-\include{chap/copy}
-\clearpage
+% \include{chap/copy}
+% \clearpage
 \pagestyle{plain}
 \setcounter{page}{0}
 \pagenumbering{Roman}
-\include{chap/abs}
+% \include{chap/abs}
 \tableofcontents
 \mainmatter
+\include{chap/chap1}
 \appendix
+\nocite{*}
 \printbibliography[heading = bibintoc]
-\include{chap/encl1}
+% \include{chap/encl1}
 \backmatter
-\include{chap/ack}
-\include{chap/origin}
+% \include{chap/ack}
+% \include{chap/origin}
 \end{document}

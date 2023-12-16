@@ -11,3 +11,4 @@ $bibtex_use = 1.5;
 $biber = "biber -l zh__pinyin --output-safechars %O %S";
 # latexmk -c 时自动删除 .run.xml 文件。
 $clean_ext = "run.xml xdv aux";
+; $out_dir = 'build';
