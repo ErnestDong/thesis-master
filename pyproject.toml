@@ -1,0 +1,23 @@
+[project]
+name = "thesis"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [{ name = "Ernest Dong", email = "dongcy2000@gmail.com" }]
+dependencies = [
+    "clickhouse-sqlalchemy>=0.3.0",
+    "ipykernel>=6.29.3",
+    "ipython-sql>=0.5.0",
+    "pandas>=2.2.1",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.1",
+    "polars>=0.20.15",
+    "clickhouse-connect>=0.7.2",
+    "pyarrow>=15.0.1",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+
+
+[tool.pdm]
+distribution = false
