@@ -3,3 +3,4 @@ indent.log
 data
 pdm.lock
 .pdm-python
+src/**/*.png

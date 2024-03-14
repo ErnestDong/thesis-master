@@ -75,13 +75,27 @@ def base(engine):
 
 
 # %%
-path = "/Users/dcy/Desktop/thesis/data/台风模型-补充精度数据/"
-files = [
-    "output_gis_cyclone_sh_reinsure.csv",
-]
-for file in files:
-    df = pd.read_csv(path + file, encoding="gb2312")
-    break
+df = pd.read_csv(
+    "/Users/dcy/Desktop/thesis/data/台风巨灾_所有数据原版/claim/个财险公共数据.csv",
+    encoding="GBK",
+)
+# %%
+from clickhouse_driver import Client
 
+client = Client("localhost")
+client.insert_dataframe(
+    "INSERT INTO thesis.claim VALUES",
+    df,
+    settings=dict(use_numpy=True),
+)
+# df.to_sql("claim", engine, if_exists="replace", index=False)
+# %%
+df = pd.read_csv(
+    "/Users/dcy/Desktop/thesis/data/台风巨灾_所有数据原版/claim/企财个财险历史物损.csv",
+    encoding="GBK",
+)
+
+# %%
+df.to_sql("history_claim", engine, if_exists="replace", index=False)
 
 # %%
