@@ -1,14 +1,19 @@
-\documentclass[UTF8,oneside,fontset=mac]{pkuthss}
+\documentclass[UTF8, oneside, fontset=mac]{pkuthss}
 \usepackage[backend = biber, style = gb7714-2015ay, url=false,gbtitlelink=true]{biblatex}
 \usepackage{longtable,multirow,booktabs}
 \usepackage{float,caption}
 \usepackage{fontspec}
+% \usepackage{amsmath,amssymb,amsthm}
+\newtheorem{hyp}{假设}
+\aboverulesep=0ex
+\belowrulesep=0ex
+\newif\ifblind\blindfalse
 \renewcommand*{\bibfont}{\zihao{5}\linespread{1.27}\selectfont}
 \setlength{\bibitemsep}{3bp}
 \newif\ifblind\blindfalse
 \pkuthssinfo{
 	cthesisname = {硕士学位论文}, ethesisname = {Master Thesis},
-	thesiscover = {硕士学位论文},
+	thesiscover = {硕士学位论文},degreetype={2},
 	ctitle = {极端天气冲击对风险偏好的影响——以家财险需求为例},
 	etitle = {Impact of Climate Change on Household Property Insurance Demand},
 	cauthor = {董晨阳}, eauthor = {Ernest Dong}, date = {\today},
@@ -21,14 +26,16 @@
 	ekeywords = {},
 }
 \addbibresource{thesis.bib}
-\newtheorem{hyp}{H}
+\hypersetup{
+    hidelinks,
+}
 \begin{document}
 \frontmatter
 \pagestyle{empty}
-\maketitle
-\clearpage
-% \include{chap/copy}
+\ifblind\makeblind\else\maketitle\fi
 % \clearpage
+% \include{chap/copy}
+\clearpage
 \pagestyle{plain}
 \setcounter{page}{0}
 \pagenumbering{Roman}
@@ -36,6 +43,9 @@
 \tableofcontents
 \mainmatter
 \include{chap/chap1}
+\include{chap/chap2}
+\include{chap/chap3}
+\include{chap/chap4}
 \appendix
 \nocite{*}
 \printbibliography[heading = bibintoc]
