@@ -5,3 +5,4 @@ pdm.lock
 .pdm-python
 src/**/*.png
 *.html
+*.json

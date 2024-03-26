@@ -16,6 +16,7 @@ dependencies = [
     "psycopg[c]>=3.1.18",
     "pyecharts>=2.0.5",
     "snapshot-phantomjs>=0.0.3",
+    "stargazer>=0.0.6",
 ]
 requires-python = ">=3.12"
 readme = "README.md"

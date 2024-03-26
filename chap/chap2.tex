@@ -26,32 +26,65 @@
 
 \section{样本选择与数据清理}\label{sec:data}
 
-本文选取了中国气象局的气象数据和某财产保险公司的承保理赔保险数据作为研究数据。空间范围上，二者均覆盖全国。大多数研究在数据预处理时通常聚类至县市一级行政区划\citep{0Do,杨娜娜2019自然灾害与企业现金持有}，得益于GIS技术的发展和普及化，本文对于数据的处理相较于更为精细，直接根据经纬度信息计算距离，不再依赖行政区划的聚类。时间维度上，气象数据时间范围为1954年1月1日至2015年12月31日，保险数据时间范围为1995年1月1日至2019年12月31日，数据清洗时保留1995-2015年数据。最终将1914万条气象数据与610万条保单数据进行了匹配，得到71万条数据用于回归分析。
+本文选取了中国气象局的气象数据和某财产保险公司的承保理赔保险数据作为研究数据。空间范围上，二者均覆盖全国。大多数研究在数据预处理时通常聚类至县市一级行政区划\citep{0Do,杨娜娜2019自然灾害与企业现金持有}，得益于GIS技术的发展和普及化，本文对于数据的处理相较于更为精细，直接根据经纬度信息计算距离，不再依赖行政区划的聚类。时间维度上，气象数据时间范围为1954年1月1日至2015年12月31日，保险数据时间范围为1995年1月1日至2019年12月31日，数据清洗时保留1995-2015年数据。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{lib/img/locations.png}
-    \caption{原始数据中气象站的地理位置分布}
-    \label{fig:location}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\textwidth, trim=200 0 200 0]{lib/img/locations.png}
+        \caption{原始数据中气象站的地理位置分布}
+        \label{fig:location}
+    \end{minipage}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\textwidth, trim=200 0 200 0]{lib/img/near.png}
+        \caption{划分为灾区气象站的地理位置分布}
+    \end{minipage}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\textwidth, trim=200 0 200 0]{lib/img/middle.png}
+        \caption{划分为近灾区气象站的地理位置分布}
+    \end{minipage}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\textwidth, trim=200 0 200 0]{lib/img/far.png}
+        \caption{划分为非灾区气象站的地理位置分布}
+    \end{minipage}
 \end{figure}
+
+进一步的数据处理流程包括：首先，我们对连续变量进行了缩尾处理，即在数据的首尾1\%处进行了截断。其次，为了确保气象数据与保单数据之间的相关性，我们对选取的保单进行了地理限制，只选择了那些距离最近的监测站20公里以内的保单进行分析。这样的限制有助于确保气象数据与保单之间的相关性更加紧密，因为气象条件对保险赔付的影响往往与地理位置密切相关。
+
+在完成了上述数据处理步骤后，本文最终将1914万条气象数据与610万条保单数据进行了匹配，得到约了70万条可用于回归分析的数据。
 
 \section{模型设定与变量定义}
 
 极端天气事件是一个外生冲击，在时空上的分布是随机的，因此本文采用了DID回归来估计极端天气事件对家庭财产保险的影响。DID回归的基本思想是通过对照组和实验组的比较，消除了时间不变的个体特征对估计结果的影响，从而更加准确地估计政策的效果。本文设定了一个虚拟的实验组和对照组，实验组为受灾区或近灾区，对照组为未受灾区，通过比较两组在巨灾发生前后的差异来估计极端天气事件对财产保险的影响。
 
-本文采用的被解释变量为家财险保额，反映家庭对财产保险的需求。而解释变量为极端天气事件的虚拟变量，分为两个维度：是否受灾和是否邻近灾区。控制变量包括是否历史投保、保险财产购置价、建筑面积等，以期消除其他因素对家庭财产保险需求的影响。各类变量及其定义如表\ref{tab:var}所示。
+本文采用的主要被解释变量为家财险保额，反映家庭对财产保险的需求。而主要解释变量为极端天气事件的虚拟变量，分为两个维度：一是是否受灾，即家庭所在地区是否直接遭受了极端天气事件的影响；二是是否邻近灾区，即使家庭所在地区未直接受灾，但若邻近地区遭受灾害，也可能会影响他们的保险需求。
+
+此外，为了更全面地评估极端天气事件的影响，本文纳入一系列控制变量。这些变量包括：
+\begin{enumerate}
+    \item 是否历史投保：反映了家庭过去的保险购买行为，可能影响他们对未来保险需求的决策。
+    \item 保险财产购置价：反映了家庭财产的价值，通常财产价值越高，保险需求也越大。
+    \item 建筑面积：建筑面积越大，需要更高的保险保额来覆盖潜在的风险。
+\end{enumerate}
+
 \input{lib/table/var.tex}
 
-针对假设H\ref{hyp:1}与H\ref{hyp:2}本文的DID模型如下：
+考虑保额分布有下界不满足正态分布，因此针对假设H\ref{hyp:1}本文的OLS模型如下：
+\begin{equation}
+    \log\text{Coverage}=\alpha+\beta_1\text{Post}+\beta\text{Controls}+\varepsilon
+    \label{eq:OLS}
+\end{equation}
+
+而针对假设H\ref{hyp:2}本文的DID模型如下：
 
 \begin{equation}
-    \text{Coverage}=\alpha+\beta_1\text{Disaster}+\beta_2\text{Post}+\beta_3\text{Disaster}\times\text{Post}+\beta\text{Controls}+\varepsilon
+    \log\text{Coverage}=\alpha+\beta_1\text{Disaster}+\beta_2\text{Post}+\beta_3\text{Disaster}\times\text{Post}+\beta\text{Controls}+\varepsilon
     \label{eq:DID_1}
 \end{equation}
 
 而针对假设H\ref{hyp:3}本文的DID模型如下：
 
 \begin{equation}
-    \text{Coverage}=\alpha+\beta_1\text{Neighbor}+\beta_2\text{Post}+\beta_3\text{Neighbor}\times\text{Post}+\beta\text{Controls}+\varepsilon
+    \log\text{Coverage}=\alpha+\beta_1\text{Neighbor}+\beta_2\text{Post}+\beta_3\text{Neighbor}\times\text{Post}+\beta\text{Controls}+\varepsilon
     \label{eq:DID_2}
 \end{equation}
+

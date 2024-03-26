@@ -3,10 +3,12 @@
 \usepackage{longtable,multirow,booktabs}
 \usepackage{float,caption}
 \usepackage{fontspec}
+
 % \usepackage{amsmath,amssymb,amsthm}
 \newtheorem{hyp}{假设}
-\aboverulesep=0ex
-\belowrulesep=0ex
+% \aboverulesep=0ex
+% \belowrulesep=0ex
+\usepackage{arydshln}
 \newif\ifblind\blindfalse
 \renewcommand*{\bibfont}{\zihao{5}\linespread{1.27}\selectfont}
 \setlength{\bibitemsep}{3bp}
@@ -34,12 +36,12 @@
 \pagestyle{empty}
 \ifblind\makeblind\else\maketitle\fi
 % \clearpage
-% \include{chap/copy}
+\include{chap/copy}
 \clearpage
 \pagestyle{plain}
 \setcounter{page}{0}
 \pagenumbering{Roman}
-% \include{chap/abs}
+\include{chap/abs}
 \tableofcontents
 \mainmatter
 \include{chap/chap1}
@@ -51,6 +53,6 @@
 \printbibliography[heading = bibintoc]
 % \include{chap/encl1}
 \backmatter
-% \include{chap/ack}
-% \include{chap/origin}
+\include{chap/ack}
+\include{chap/origin}
 \end{document}

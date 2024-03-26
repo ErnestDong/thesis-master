@@ -99,3 +99,5 @@ df = pd.read_csv(
 df.to_sql("history_claim", engine, if_exists="replace", index=False)
 
 # %%
+
+df.to
