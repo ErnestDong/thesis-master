@@ -166,7 +166,7 @@ ALTER TABLE raining_impact
 );
 
 CREATE OR replace
-TABLE tmp_cte engine = Memory AS (
+TABLE tmp_cte engine =MergeTree primary key `保单号` AS (
     SELECT
                 `保单号`,
                 timediff(
@@ -272,7 +272,7 @@ view olss as(
         `保单纬度`,
         `distance`,
         `保险起期`,
-        `bases.保险止期` as `保险止期`,
+        `保险止期`,
         `保费`,
         `累计降水量`,
         `maxraining`,
@@ -282,15 +282,17 @@ view olss as(
         `treated`,
         `after`,
         `locations`,
-        `bases.上年保单号` as `上年保单号`,
-        `bases.保险金额` as `保险金额`,
-        `bases.保费合计` as `保费合计`,
-        `bases.保险财产购置价` as `保险财产购置价`,
-        `bases.建筑面积` as `建筑面积`,
+        `上年保单号`,
+        `保险金额`,
+        `保费合计`,
+        `保险财产购置价`,
+        `建筑面积`,
         toYear(`保险起期`) as `t`
     from
         ols o
 );
+
+select * from ols;
 
 create view claims as
 select
@@ -371,38 +373,49 @@ on
 
 alter table middle add column middle Int8 default 1;
 
-create or replace view postview as(
-with posts as(
-select
-    `保单号`,
-    min(post)/24/60/60 as minpost
-from
-    tmp_cte tc
-group by
-    `保单号`
-having
-    tc.post > 0)
-select posts.*, t.maxpost from posts
-outer join
-(
-        select
+create view posts as(
+    select
             `保单号`,
-            max(post)/24/60/60 as maxpost
-        from
+            min(post)/ 24 / 60 / 60 as minpost
+    from
             tmp_cte tc
-        group by
+    where
+            tc.post > 0
+    group by
             `保单号`
-        having
-            tc.post < 0
-    )t
-        using `保单号`);
-select * from postview ;
+);
+create or replace
+view postview as(
+    select
+        posts.*,
+        t.maxpost
+    from
+        posts
+    outer join
+(
+            select
+                `保单号`,
+                max(post)/ 24 / 60 / 60 as maxpost
+            from
+                tmp_cte tc
+            where
+                tc.post < 0
+            group by
+                `保单号`
+        )t
+            using `保单号`
+);
+
+select * from postview;
+
+
 create or replace
 view ols_ups as(
     select
         c.total_claim as `total_claim`, b.`保单号` as `下年保单号` ,
         t.`middle` as `middle`,t.`区站号` as `区站号`,t.`区站经度` as `区站经度`,t.`区站纬度` as `区站纬度`,t.`保单号` as `保单号`,t.`保单经度` as `保单经度`,t.`保单纬度` as `保单纬度`,t.`distance` as `distance`,t.`保险起期` as `保险起期`,t.`保险止期` as `保险止期`,t.`保费` as `保费`,t.`累计降水量` as `累计降水量`,t.`maxraining` as `maxraining`,t.`record_date` as `record_date`,t.`maxraining_before` as `maxraining_before`,t.`maxraining_after` as `maxraining_after`,t.`treated` as `treated`,t.`after` as `after`,t.`locations` as `locations`,t.`上年保单号` as `上年保单号`,t.`保险金额` as `保险金额`,t.`保费合计` as `保费合计`,t.`保险财产购置价` as `保险财产购置价`,t.`建筑面积` as `建筑面积`,t.`t` as `t`,
-        p.minpost as minpost, p.maxpost as maxpost
+        p.minpost as minpost, p.maxpost as maxpost,
+        l.`省份`,l.`站名`
     from
         (
             select
@@ -418,6 +431,7 @@ on
         t.`保单号` = c.`保单号`
     left join base b on b.`上年保单号` = t.`保单号`
     left join postview p on p.`保单号`=t.`保单号`
+    left join location l on l.`区站号`=t.`区站号`
 );
 
 select * from ols_ups;
@@ -485,3 +499,8 @@ from
 order by dist;
 
 select `treated`, `middle`,`after`,count(1) from ols_ups group by `treated`,`middle`,`after`;
+
+select count(*) from base where hasSubsequence(`标的详细地址`, '村')=1 or hasSubsequence(`标的详细地址`, '县')=1;
+select count(*) from base where hasSubsequence(`标的详细地址`, '村')=0 and hasSubsequence(`标的详细地址`, '县')=0;
+
+select * from base where `保单号`='04FCB0F3D3616712E05400144F67CA43';
