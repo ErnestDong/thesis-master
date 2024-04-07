@@ -1,7 +1,9 @@
-\chapter{实证计量结果与讨论}\label{chap:4}
+\chapter{实证结果与分析}\label{chap:4}
 \section{描述性统计}
 
 表\ref{tab:desc}报告了主要变量的描述性统计结果，表\ref{tab:corr}报告了主要变量的相关系数矩阵，变量相关系数极低，说明本文的实证研究结果不存在多重共线性。
+
+TODO：加入评述
 \begin{table}[H]
     \caption{数据描述性统计}\label{tab:desc}
     \centering
@@ -59,9 +61,17 @@
 \end{table}
 
 \section{稳健性检验}
+\subsection{平行趋势检验}
+TODO
+加入图
+
 为了验证DID实证结果的稳健性，需要进行平行趋势检验。表\ref{tab:robust}展示了平行趋势检验的结果。本文分别将实验组设置为灾区和近灾区($\text{Treat}=\text{Disaster}$以及$\text{Treat}=\text{Disaster}\text{Neighbor}$)，对极端天气事件发生前三个季度的保额进行回归。结果显示在绝大多数回归中，交互项的系数都不显著，这表明在极端天气事件发生前，实验组和对照组的保额水平基本是平行的，满足平行趋势假设，可以通过DID方法来估计极端天气事件对家财险需求的影响。唯一表现出显著性的部分是在灾区受灾前90天内(一个季度)的保额，这可能是因为20年一遇的极端降水往往是持续较久的，灾区居民达到20年一遇的门槛前已经开始感知到风险，从而提前购买了保险。
 \begin{table}[htbp]
     \centering
     \caption{平行趋势检验}\label{tab:robust}
     \input{lib/table/robust.tex}
 \end{table}
+
+\subsection{平行趋势检验}
+TODO
+保额保费相关性
