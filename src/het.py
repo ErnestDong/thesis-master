@@ -8,10 +8,6 @@ from sqlalchemy import create_engine
 from stargazer.stargazer import Stargazer
 
 engine = create_engine("clickhouse+native://localhost:9000/thesis")
-rainings = pd.read_sql(
-    "select * from history_raining hr left join location l on hr.`区站号`=l.`区站号`",
-    engine,
-)
 
 sns.set_theme(style="white")
 east = {
@@ -31,6 +27,12 @@ west = {
 }
 northeast = {i: "NorthEast" for i in "".split("、")}
 provinces = {**east, **middle, **west, **northeast}
+# %%
+rainings = pd.read_sql(
+    "select * from history_raining hr left join location l on hr.`区站号`=l.`区站号`",
+    engine,
+)
+
 rainings["region"] = rainings["省份"].map(provinces)
 
 x = 0.05
