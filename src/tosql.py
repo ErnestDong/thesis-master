@@ -18,7 +18,8 @@ def rainings(engine):
         logging.info(f"{i}/{len(rainings)}write {raining} to sql")
 
 
-# rainings(engine)
+rainings(engine)
+# %%
 
 
 def location(engine):
