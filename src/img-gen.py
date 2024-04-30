@@ -16,3 +16,11 @@ df = pd.DataFrame(
 fig = sns.barplot(x="", y="家庭财产保险保费(亿元)", data=df).get_figure()
 fig.savefig(path / "img" / "家庭财产保险保费.png")
 # %%
+df = pd.read_parquet("../data/olsups.parquet")
+
+# %%
+df["保险起期"] = pd.to_datetime(df["保险起期"])
+fig = sns.histplot(df["保险起期"], kde=True)
+fig.set_ylabel("保单数量")
+fig
+# %%

@@ -1,12 +1,13 @@
 \documentclass[UTF8, oneside, fontset=mac]{pkuthss}
-\usepackage[backend = biber, style = gb7714-2015ay,doi=false, url=false]{biblatex}
+\usepackage[backend = biber, style = gb7714-2015ay,sortcites,sorting=ynt, doi=false, url=false]{biblatex}
+\usepackage{amsthm}
 \usepackage{longtable,multirow,booktabs}
 \usepackage{float,caption}
 \usepackage{fontspec}
 \usepackage{rotating}
 \usepackage[perpage]{footmisc}
-% \usepackage{amsmath,amssymb,amsthm}
-\newtheorem{hyp}{假设}
+\newtheorem{hyp}{假说}
+\renewcommand{\thehyp}{H\arabic{hyp}}
 % \aboverulesep=0ex
 % \belowrulesep=0ex
 \usepackage{arydshln}
@@ -53,6 +54,7 @@
 \include{chap/chap4}
 \appendix
 \nocite{*}
+\newrefcontext[sorting=nyt]
 \printbibliography[heading = bibintoc, title = {参考文献}]
 % \include{chap/encl1}
 \backmatter

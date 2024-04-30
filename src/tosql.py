@@ -8,7 +8,6 @@ from sqlalchemy import create_engine
 logging.basicConfig(level=logging.INFO)
 engine = create_engine("postgresql+psycopg://dcy@localhost:5432/thesis")
 
-
 def rainings(engine):
     rainings = glob.glob("/Users/dcy/Downloads/毕业论文/降水/降水/*.xlsx")
     for i, raining in enumerate(rainings):

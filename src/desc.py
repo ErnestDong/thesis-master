@@ -103,5 +103,4 @@ tmp = tmp[(tmp.index > -5) & (tmp.index < 4)]
 plt.figure(figsize=(8, 4))
 sns.lineplot(data=tmp, x="Quarter", y="Coverage", hue="Category")
 plt.savefig("../lib/img/robust.png")
-
 # %%

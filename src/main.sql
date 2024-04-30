@@ -567,7 +567,9 @@ on
 
 select * from ols_ups;
 
-
+SELECT count(DISTINCT `区站号`) FROM ols_ups;
+SELECT count(1) FROM location;
+SELECT treated, middle, count(1) FROM ols_ups ou GROUP BY treated, middle;
 
 select
     t,
@@ -582,3 +584,7 @@ select count(1) from history_claim hc;
 select * from history_claim hc left join claim on hc.`赔案号` =claim.`赔案号`;
 
 select `赔案号`, count(`赔案号`) as cnt from history_claim group by `赔案号` order by cnt desc;
+
+-- tosql2.py
+
+select * from gdp limit 20;
