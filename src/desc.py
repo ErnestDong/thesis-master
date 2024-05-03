@@ -1,43 +1,48 @@
 # %%
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from sqlalchemy import create_engine
 
-sns.set_theme(style="white")
+# sns.set_theme(style="white")
+sns.set_style("white", {"font.sans-serif": ["STHeiti"]})
 # %%
-original_df = pd.read_parquet("../data/olsups.parquet")
-df = original_df[original_df["保险金额"] > 0].copy()
+
+df = pd.read_parquet("../data/df.parquet")
 df["历史投保"] = df["上年保单号"].map(lambda x: 1 if x else 0)
 df = df[(df["t"] > 1999) & (df["t"] < 2014)]
 df["ti"] = df["t"].astype(str)
-df["是否理赔"] = df["total_claim"].map(lambda x: 1 if x > 0 else 0)
-df.rename(
-    columns={
-        "保费合计": "Premium",
-        "保险金额": "Coverage",
-        "middle": "Neighbor",
-        "treated": "Disaster",
-        "after": "Post",
-        "历史投保": "Prem_before",
-        "保险财产购置价": "Price",
-        "建筑面积": "Area",
-        "是否理赔": "Claim",
-    },
-    inplace=True,
-)
-df["Price"] = df["Price"] / 1000000
 df.head()
 
 # %%
-descol = ["Coverage", "Disaster", "Neighbor", "Post", "Prem_before", "Price", "Area"]
-todesc = df[descol].astype(float).describe()
-# todesc = todesc.astype(int).astype(str).T.rename(columns={"50%": "median"})
+descol = [
+    "Coverage",
+    "Disaster",
+    "Neighbor",
+    "Post",
+    "Price",
+    "GDP",
+    "Density",
+    "Penetration",
+    "Prem_before",
+    "Claim",
+    "Premium",
+    "total_claim",
+    "保费",
+    "累计降水量",
+]
 
+todesc = df[descol].astype(float).describe()
+todesc = todesc.rename(
+    columns={"total_claim": "累计赔付额", "Prem_before": "Prem\\_before"}
+)
+# todesc = todesc.astype(int).astype(str).T.rename(columns={"50%": "median"})
+todesc
 # %%
-desc = df.describe().T.rename(
+desc = todesc.T.rename(
     columns={
-        "count": "观测值",
+        "count": "观测数",
         "mean": "均值",
         "std": "标准差",
         "min": "最小值",
@@ -47,6 +52,11 @@ desc = df.describe().T.rename(
 )
 desc.drop(columns=["25%", "75%"], inplace=True)
 desc.to_latex("../lib/table/desc.tex", float_format="%.2f")
+
+# %%
+
+sns.displot(np.log(df[df["Disaster"] == 1]["累计降水量"]), kde=True)
+plt.savefig("../lib/img/precip.png")
 # %%
 
 tmp = df[["Coverage", "Premium"]]

@@ -5,8 +5,7 @@ from clickhouse_driver import Client
 gdp = pd.read_excel("../data/GDP.xlsx", skipfooter=2, index_col=0)
 gdp.rename(columns=lambda x: x.replace(":GDP", ""), inplace=True)
 gdp.index = gdp.index.map(lambda x: x.year)
-
-gdp = gdp.stack().reset_index()
+gdp = gdp.pct_change().stack().reset_index()
 gdp.columns = ["year", "province", "gdp"]
 
 # %%
@@ -30,9 +29,9 @@ df = gdp.merge(density, on=["year", "province"]).merge(depth, on=["year", "provi
 
 # %%
 client = Client("localhost", settings={"use_numpy": True})
-client.execute(
-    "create table thesis.gdp (`year` Int32, `province` String, `gdp` Float64, `保险密度` Float64, `保险深度` Float64) engine = MergeTree order by (year, province)"
-)
+# client.execute(
+#     "create table thesis.gdp (`year` Int32, `province` String, `gdp` Float64, `保险密度` Float64, `保险深度` Float64) engine = MergeTree order by (year, province)"
+# )
 
 client.insert_dataframe("insert into thesis.gdp values", df)
 # %%

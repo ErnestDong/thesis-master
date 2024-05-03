@@ -25,28 +25,8 @@ engine = create_engine("clickhouse+native://localhost/thesis")
 log = np.log
 sns.set_theme(style="white")
 # original_df = pd.read_sql("ols_ups_far", engine)
-original_df = pd.read_parquet("../data/olsups.parquet")
-sns.histplot(original_df["distance"], kde=True)
-df = original_df[original_df["保险金额"] > 0].copy()
-df["历史投保"] = df["上年保单号"].map(lambda x: 1 if x else 0)
-df = df[(df["t"] > 1999) & (df["t"] < 2014)]
-df["ti"] = df["t"].astype(str)
-df["是否理赔"] = df["total_claim"].map(lambda x: 1 if x > 0 else 0)
-df.rename(
-    columns={
-        "保费合计": "Premium",
-        "保险金额": "Coverage",
-        "middle": "Neighbor",
-        "treated": "Disaster",
-        "after": "Post",
-        "历史投保": "Prem_before",
-        "保险财产购置价": "Price",
-        "建筑面积": "Area",
-        "是否理赔": "Claim",
-    },
-    inplace=True,
-)
-df["Price"] = df["Price"] / 1000000
+original_df = pd.read_parquet("../data/df.parquet")
+df = original_df.copy()
 df.head()
 # %%
 groups = "Coverage"
@@ -91,6 +71,8 @@ tmp
 result = {}
 missing = {}
 for items in tmp:
+    if items["站名"] == "":
+        continue
     province = [
         i for i in parsing_cities.values() if i["province"] == items["省份"][:2]
     ][0]
@@ -149,8 +131,8 @@ missing_mod = [
     "贺县",
     "滁县",
     "宿县",
-    "达板城",
-    "尚丘",
+    # "达板城",
+    # "尚丘",
 ]
 for i in missing_mod:
     result[i].update({"type": "城市", "city": i, "rural": None})
@@ -166,7 +148,7 @@ for rural, group in df.groupby("rural"):
         print(rural, category)
         noncat = "Neighbor" if category == "Disaster" else "Disaster"
         model = smf.ols(
-            f"log(Coverage) ~ {category}*Post",
+            f"log(Coverage) ~ {category}*Post+Prem_before+log(Price)+log(Penetration)+log(GDP)",
             data=group[group[noncat] == 0],
         ).fit()
         stars.append(model)

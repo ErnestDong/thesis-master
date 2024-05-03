@@ -1,9 +1,3 @@
-@set years = 20
-@set duration=60
-@set distance=20
-@set middle=50
-;
-
 use thesis;
 
 
@@ -32,6 +26,7 @@ select
 	) as "record_date",
 	r.`区站号`,
 	r.`20-20时累计降水量`,
+		r.`年`,
 	l.`经度` as `经度`,
 	l.`纬度` as `纬度`
 from
@@ -41,7 +36,7 @@ left join
 on
 	r.`区站号` = l.`区站号`
 where
-	r.`年`>1994 and r.`20-20时累计降水量`<30000;
+	r.`20-20时累计降水量`<30000;
 
 -- 删除缺乏地理位置和过时的保单
 CREATE or replace
@@ -93,6 +88,7 @@ select
 	r.record_date,
 	r.`区站号`,
 	r.`20-20时累计降水量`,
+	r.`年`,
 	CTE.maxraining
 from
 	rainings r
@@ -101,7 +97,7 @@ CTE
 on
 	r.`区站号` = CTE.`区站号`
 where
-	r.`20-20时累计降水量` >= CTE.maxraining
+	r.`20-20时累计降水量` >= CTE.maxraining and r.`年`>1994
 order by
 	r.`区站号`,
 	r.record_date;
@@ -310,9 +306,7 @@ TABLE tmp_cte engine =MergeTree primary key `保单号` AS (
     WHERE
                 ri.treated = 0
         AND ri.`保险起期`>hr.record_date - toIntervalYear(1)
-        AND ri.`保险起期`<hr.record_date + toIntervalYear(
-                    1
-        )
+        AND ri.`保险起期`<hr.record_date + toIntervalYear(1)
         AND geoDistance(
                     ri.`保单经度`,
                     ri.`保单纬度`,
@@ -321,7 +315,8 @@ TABLE tmp_cte engine =MergeTree primary key `保单号` AS (
         )/ 1000<300
 );
 
-select `保单号` , post/24/60/60 as t from tmp_cte tc order by t desc;
+select `保单号` , post/24/60/60 as t from tmp_cte tc order by t asc;
+
 alter table raining_impact
 (
     update
@@ -330,47 +325,7 @@ alter table raining_impact
         treated = 0
         and `保单号` in (select `保单号` from tmp_cte where `post`<0)
 );
-
-select
-    DISTINCT `保单号`
-from
-    raining_impact
-where
-    `after` = 1
-    and treated = 0
-    and `保单号` not in (
-        select
-            `保单号`
-        from
-            tmp_cte
-        where post < 0
-    );
-
-
-select
-    treated,
-    `after`,
-    count(1),
-    avg(`保费`)
-from
-    raining_impact ri
-group by
-    treated,
-    `after`;
-
-select
-    treated,
-    `after`,
-    count(`after`),
-    avg(`保费`)
-from
-    ols_ups
-group by
-    treated,
-    `after`
-having
-    `保费` != 0;
-
+select ri.treated ,ri.`after`, count(1) from raining_impact ri group by ri.treated ,ri.`after` ;
 create or replace
 table ols engine = MergeTree PRIMARY KEY `保单号` as
 select
@@ -391,7 +346,26 @@ left join
 bases
 on
     cte.`保单号` = bases.`保单号`;
-
+create or replace
+table ols engine = MergeTree PRIMARY KEY `保单号` as
+select
+    toYear(
+        bases.`保险起期`
+    ) as t,
+    *
+from
+    (
+        select
+            *
+        from
+            raining_impact ri
+        where
+            distance<20
+    )cte
+left join
+bases
+on
+    cte.`保单号` = bases.`保单号`;
 create or replace
 view olss as(
     select
@@ -504,7 +478,7 @@ on
 
 alter table middle add column middle Int8 default 1;
 
-create view posts as(
+create or replace view posts as(
     select
             `保单号`,
             min(post)/ 24 / 60 / 60 as minpost
@@ -538,53 +512,89 @@ view postview as(
 );
 
 select * from postview;
+select * from olss;
+
+CREATE OR replace
+TABLE ols_with_mid engine = MergeTree PRIMARY KEY `保单号` AS
+	SELECT
+		middle.middle AS middle,
+		olss.*
+FROM
+		olss
+LEFT JOIN middle ON
+		olss.`保单号` = middle.`保单号`;
 
 
-create or replace
-view ols_ups as(
-    select
-        c.total_claim as `total_claim`, b.`保单号` as `下年保单号` ,
-        t.`middle` as `middle`,t.`区站号` as `区站号`,t.`区站经度` as `区站经度`,t.`区站纬度` as `区站纬度`,t.`保单号` as `保单号`,t.`保单经度` as `保单经度`,t.`保单纬度` as `保单纬度`,t.`distance` as `distance`,t.`保险起期` as `保险起期`,t.`保险止期` as `保险止期`,t.`保费` as `保费`,t.`累计降水量` as `累计降水量`,t.`maxraining` as `maxraining`,t.`record_date` as `record_date`,t.`maxraining_before` as `maxraining_before`,t.`maxraining_after` as `maxraining_after`,t.`treated` as `treated`,t.`after` as `after`,t.`locations` as `locations`,t.`上年保单号` as `上年保单号`,t.`保险金额` as `保险金额`,t.`保费合计` as `保费合计`,t.`保险财产购置价` as `保险财产购置价`,t.`建筑面积` as `建筑面积`,t.`t` as `t`,
-        p.minpost as minpost, p.maxpost as maxpost,
-        l.`省份`,l.`站名`
-    from
-        (
-            select
-                middle.middle as middle,
-                olss.*
-            from
-                olss
-            left join middle on
-                olss.`保单号` = middle.`保单号`
-        )t
-    left join claims c
-on
-        t.`保单号` = c.`保单号`
-    left join base b on b.`上年保单号` = t.`保单号`
-    left join postview p on p.`保单号`=t.`保单号`
-    left join location l on l.`区站号`=t.`区站号`
-);
+CREATE OR replace
+TABLE ols_with_next engine = MergeTree PRIMARY KEY `保单号` AS
+SELECT
+	b.`保单号` AS `下年保单号`,
+	owm.*
+FROM
+	ols_with_mid owm
+LEFT JOIN
+(
+	SELECT
+		`上年保单号`,
+		`保单号`
+	FROM
+		base b
+	WHERE
+		`上年保单号`!= '') b ON
+	owm.`保单号`= b.`上年保单号`;
 
-select * from ols_ups;
+	--        c.total_claim as `total_claim`,
+	--        p.minpost as minpost, p.maxpost as maxpost,
+	--        l.`省份`,l.`站名`
 
-SELECT count(DISTINCT `区站号`) FROM ols_ups;
-SELECT count(1) FROM location;
-SELECT treated, middle, count(1) FROM ols_ups ou GROUP BY treated, middle;
+CREATE OR replace
+TABLE ols_with_claim engine = MergeTree PRIMARY KEY `保单号` AS
+SELECT
+	c.total_claim AS `total_claim`,
+	own.*
+FROM
+	ols_with_next own
+LEFT JOIN claims c using `保单号`;
+CREATE OR replace
+TABLE ols_with_post engine = MergeTree PRIMARY KEY `保单号` AS
+SELECT
+	p.minpost AS minpost,
+	p.maxpost AS maxpost,
+	own.*
+FROM
+	ols_with_claim own
+LEFT JOIN postview p using `保单号`;
 
-select
-    t,
-    count(t)
-from
-    ols_ups
-group by
-    t;
-select count(1) from claims;
-select count(1) from history_claim hc;
-
-select * from history_claim hc left join claim on hc.`赔案号` =claim.`赔案号`;
-
-select `赔案号`, count(`赔案号`) as cnt from history_claim group by `赔案号` order by cnt desc;
+CREATE OR replace
+TABLE ols_with_loc engine = MergeTree PRIMARY KEY `保单号` AS
+SELECT
+	l.`省份`,
+	l.`站名`,
+	own.*
+FROM
+	ols_with_post own
+LEFT JOIN location l using `区站号`;
 
 -- tosql2.py
+CREATE or replace TABLE ols_up ENGINE=MergeTree PRIMARY KEY `保单号` AS(
+SELECT
+	ou.*,
+	g.`gdp`, g.`保险密度`, g.`保险深度`
+FROM
+	ols_with_loc ou
+LEFT JOIN
+gdp g
+ON
+	ou.`省份` = g.province
+	AND ou.t = g.`year`
+);
 
-select * from gdp limit 20;
+create view ols_ups as select * from ols_up ou where `保单号`!='';
+select treated, middle, `after`, avg(`保险金额`), count(1) from ols_up o where `保单号`!='' group by treated ,middle, `after`;
+select min(`保险深度`),max(`保险深度`) from ols_up;
+select count(1) from ols_up where `累计降水量`=0;
+
+
+
+
+select treated , middle , `after` ,COUNT(1) from ols_up ou where minpost!=0 or maxpost !=0 group by treated , middle , `after`;

@@ -60,31 +60,32 @@
 
 \begin{enumerate}
     \item 是否历史投保：过去一年是否购买了家财险，可能影响他们对未来保险需求的决策。
-    \item 保险财产购置价：反映了家庭财产的价值，通常财产价值越高，对风险的担心也越大，保险需求也越大。
-    \item 建筑面积：建筑面积越大，需要更高的保险保额来覆盖潜在的风险。
-    \item GDP增速：反应当地经济增长率，经济增长促进保险购买。
-    \item 保险密度：反映了当地保险市场的发展程度，保险市场发展程度越高，家庭购买保险的可能性也越大。
-    \item 保险深度：反映了家庭购买保险的程度，保单深度越高，家庭购买保险的可能性也越大。
+    \item 保险财产的购置价：反映了家庭财产的价值，通常财产价值越高，对风险的担心也越大，保险需求也越大。
+    % \item 建筑面积：建筑面积越大，需要更高的保险保额来覆盖潜在的风险。
+    \item GDP增速：反应当地经济增长率，经济增长会促进保险购买。
+    \item 保险深度：反映了当地保险市场的发展程度，保险市场发展程度越高，家庭购买保险的可能性也越大。
 \end{enumerate}
 
-被解释变量与控制变量含义如表{tab:var}所示。
+被解释变量与控制变量含义如表\ref{tab:var}所示。
 \input{lib/table/var.tex}
 
 \subsection{模型设定}
 极端天气事件是一个外生冲击，在时空上的分布是随机的，因此本文采用了DID回归来估计极端天气事件对家庭财产保险的影响。本文设定实验组和对照组，实验组为受灾区或近灾区，对照组为未受灾区。
 
-针对假设\ref{hyp:2}，建立如下双重差分模型：
+针对假设\ref{hyp:3}，本文建立双重差分模型\ref{eq:DID_1}
 
 \begin{equation}
-    \log\text{Coverage}=\alpha+\beta_1\text{Disaster}+\beta_2\text{Post}+\beta_3\text{Disaster}\times\text{Post}+\beta\text{Controls}+\varepsilon
-    \label{eq:DID_1}
-\end{equation}
-
-针对假设\ref{hyp:3}，建立如下双重差分模型：
-
-\begin{equation}
-    \log\text{Coverage}=\alpha+\beta_1\text{Neighbor}+\beta_2\text{Post}+\beta_3\text{Neighbor}\times\text{Post}+\beta\text{Controls}+\varepsilon
+    \log\text{Coverage}_{it}=\alpha+\beta_1\text{Neighbor}_{i}+\beta_2\text{Post}_{it}+\beta_3\text{Neighbor}_{i}\times\text{Post}_{it}+\beta\text{Controls}_{it}+\varepsilon_{it}
     \label{eq:DID_2}
 \end{equation}
 
-TODO：这两个模型后面需要增加一段，对上面模型进行说明，具体请参考塔佳宜论文中的相应部分。他那里面七是季度，所以比较多，你这里面一期就是一年。另外你公式中没有下标，具体你也参考他的论文中的模型
+其中，$\text{Coverage}_{it}$为家庭$i$的家财险保额，用来表征家财险需求。家庭$i$表示某场极端降水冲击下的某家庭，$t$指代极端降水冲击的年份。$\text{Neighbor}_{i}$为家庭是否位于近灾区，近灾区家庭为处理组，取值为 1;远灾区家庭为对照组，取值为 0。$\text{Post}_{it}$为家财险生效时间是否在极端天气事件后，冲击后一年内为1，冲击前一年为0。$\text{Neighbor}_{t}\times\text{Post}_{it}$为交互项，其系数反映了单次极端天气冲击对近灾区家庭家财险需求的平均因果效应，$\text{Controls}_{it}$为控制变量，包括是否历史投保、保险财产购置价、保险深度、GDP增速等，除是否历史投保之外的其他控制变量均取对数处理，如保险财产购置价、保险密度、GDP增速等标量。$\varepsilon_{it}$为随机误差项。
+
+针对假设\ref{hyp:2}，本文建立如下双重差分模型：
+\begin{equation}
+    \log\text{Coverage}_{it}=\alpha+\beta_1\text{Disaster}_{i}+\beta_2\text{Post}_{it}+\beta_3\text{Disaster}_{i}\times\text{Post}_{it}+\beta\text{Controls}_{it}+\varepsilon_{it}
+    \label{eq:DID_1}
+\end{equation}
+
+其中，$\text{Disaster}_{i}$为家庭是否位于灾区，灾区家庭为处理组，取值为 1;非灾区家庭为对照组，取值为 0。其他变量的定义与模型\ref{eq:DID_2}相同。
+
