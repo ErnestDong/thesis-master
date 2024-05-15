@@ -6,12 +6,12 @@
          }
         \toprule
         变量类别                    & 变量名称         & 变量定义    & 变量解释                \\ \midrule
-        被解释变量                   & Coverage     & 保额      & 保险金额(元)                \\ \midrule
-        \multirow{3}{*}{主要解释变量} & Disaster     & 灾区      & 处于极端降水气象站20公里内取1，否则取0    \\ \cmidrule(l){2-4}
-                                & Neighbor     & 近灾区     & 处于极端降水气象站20-50公里内取1，否则取0 \\ \cmidrule(l){2-4}
-                                & Post         & 降水冲击  & 保险起期前1年遇到过极端降水冲击取1，否则为0 \\
+        被解释变量                   & Coverage     & 保额      & 户均保险金额(元)              \\ \midrule
+        \multirow{3}{*}{主要解释变量} & Disaster     & 是否灾区      & 处于20年一遇降水气象站20公里内取1，否则取0    \\ \cmidrule(l){2-4}
+                                & Neighbor     & 是否近灾区     & 处于20年一遇降水气象站20-50公里内取1，否则取0 \\ \cmidrule(l){2-4}
+                                & Post         & 是否降水冲击  & 保险起期前1年遇到过20年一遇降水冲击取1，否则为0 \\
         \midrule
-        \multirow{6}{*}{控制变量}   & Prem\_before & 历史投保    & 保险标的是否有投保记录         \\ \cmidrule(l){2-4}
+        \multirow{6}{*}{控制变量}   & Prem\_before & 历史投保    & 保险标的前一年是否有投保记录         \\ \cmidrule(l){2-4}
                                 & Price        & 保险财产购置价 & 保险标的资产购置价(元)           \\ \cmidrule(l){2-4}
                                 & Penetration         & 保险深度    & 所在省保费收入占GDP之比            \\ \cmidrule(l){2-4}
                                 & Density         & 保险密度    & 所在省人均保费(元)           \\ \cmidrule(l){2-4}
