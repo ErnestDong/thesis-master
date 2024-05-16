@@ -29,9 +29,9 @@ df = gdp.merge(density, on=["year", "province"]).merge(depth, on=["year", "provi
 
 # %%
 client = Client("localhost", settings={"use_numpy": True})
-# client.execute(
-#     "create table thesis.gdp (`year` Int32, `province` String, `gdp` Float64, `保险密度` Float64, `保险深度` Float64) engine = MergeTree order by (year, province)"
-# )
+client.execute(
+    "create or replace table thesis.gdp (`year` Int32, `province` String, `gdp` Float64, `保险密度` Float64, `保险深度` Float64) engine = MergeTree order by (year, province)"
+)
 
 client.insert_dataframe("insert into thesis.gdp values", df)
 # %%

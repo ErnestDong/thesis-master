@@ -27,6 +27,22 @@ west = {
 }
 northeast = {i: "NorthEast" for i in "".split("、")}
 provinces = {**east, **middle, **west, **northeast}
+east = {
+    i: "East"
+    for i in "北京、天津、河北、上海、江苏、浙江、福建、山东、广东、辽宁、海南".split(
+        "、"
+    )
+}
+middle = {
+    i: "Middle" for i in "山西、吉林、黑龙江、安徽、江西、河南、湖北、湖南".split("、")
+}
+west = {
+    i: "West"
+    for i in "重庆、四川、内蒙古、广西、贵州、云南、西藏、陕西、甘肃、青海、宁夏、新疆".split(
+        "、"
+    )
+}
+provinces = {**east, **middle, **west}
 # %%
 rainings = pd.read_sql(
     "select * from history_raining hr left join location l on hr.`区站号`=l.`区站号`",
@@ -36,10 +52,12 @@ rainings = pd.read_sql(
 rainings["region"] = rainings["省份"].map(provinces)
 
 x = 0.05
-rainings["raining"] = rainings["20-20时累计降水量"]
-low, high = rainings["raining"].quantile([x, 1 - x])
+rainings["raining(mm)"] = rainings["20-20时累计降水量"] / 5
+low, high = rainings["raining(mm)"].quantile([x, 1 - x])
 sns.boxplot(
-    x="region", y="raining", data=rainings[rainings["raining"].between(low, high)]
+    x="region",
+    y="raining(mm)",
+    data=rainings[rainings["raining(mm)"].between(low, high)],
 )
 plt.savefig("../lib/img/rainings.png")
 # %%

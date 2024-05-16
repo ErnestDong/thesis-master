@@ -6,10 +6,11 @@ import seaborn as sns
 from sqlalchemy import create_engine
 
 # sns.set_theme(style="white")
-sns.set_style("white", {"font.sans-serif": ["STHeiti"]})
+sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (8, 6)})
+
 # %%
 
-df = pd.read_parquet("../data/df.parquet")
+df = pd.read_parquet("../data/dfd.parquet")
 df["历史投保"] = df["上年保单号"].map(lambda x: 1 if x else 0)
 df = df[(df["t"] > 1999) & (df["t"] < 2014)]
 df["ti"] = df["t"].astype(str)
@@ -18,24 +19,25 @@ df.head()
 # %%
 descol = [
     "Coverage",
-    "Disaster",
-    "Neighbor",
-    "Post",
     "Price",
     "GDP",
     "Density",
     "Penetration",
-    "Prem_before",
-    "Claim",
+    "distance",
+    # "Prem_before",
     "Premium",
     "total_claim",
     "保费",
     "累计降水量",
 ]
 
-todesc = df[descol].astype(float).describe()
+todesc = df[descol].astype(float).replace(0, np.nan).describe()
 todesc = todesc.rename(
-    columns={"total_claim": "累计赔付额", "Prem_before": "Prem\\_before"}
+    columns={
+        "total_claim": "累计赔付额",
+        "Prem_before": "Prem\\_before",
+        "累计降水量": "极端降水量",
+    }
 )
 # todesc = todesc.astype(int).astype(str).T.rename(columns={"50%": "median"})
 todesc
@@ -48,15 +50,36 @@ desc = todesc.T.rename(
         "min": "最小值",
         "50%": "中位数",
         "max": "最大值",
+        "": "变量名",
     }
 )
+desc.index.name = "变量名"
+desc["观测数"] = desc["观测数"].astype(int)
 desc.drop(columns=["25%", "75%"], inplace=True)
 desc.to_latex("../lib/table/desc.tex", float_format="%.2f")
 
 # %%
-
-sns.displot(np.log(df[df["Disaster"] == 1]["累计降水量"]), kde=True)
-plt.savefig("../lib/img/precip.png")
+tmp = df[(df["Disaster"] == 1)]["累计降水量"] / 5
+tmp.name = "极端降水量"
+fig, ax = plt.subplots(figsize=(6.4, 4.8))
+sns.histplot(tmp[tmp < 600], ax=ax)
+fig.savefig("../lib/img/precip.png")
+# %%
+tmp2 = df["保险起期"]
+fig, ax = plt.subplots(figsize=(6.4, 4.8))
+sns.histplot(tmp2, ax=ax)
+fig.savefig("../img/insurance.png")
+# %%
+tmp2 = df["distance"]
+fig, ax = plt.subplots(figsize=(6.4, 4.8))
+sns.histplot(tmp2, ax=ax)
+fig.savefig("../lib/img/olsdistance.png")
+# %%
+tmp2 = df["Coverage"]
+fig, ax = plt.subplots(figsize=(6.4, 4.8))
+plt.xscale("log")
+sns.histplot(tmp2, ax=ax)
+fig.savefig("../lib/img/coverage.png")
 # %%
 
 tmp = df[["Coverage", "Premium"]]
