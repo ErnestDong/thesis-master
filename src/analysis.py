@@ -22,12 +22,12 @@ def tablelize(star):
 
 
 sns.set_theme(style="whitegrid")
-df = pd.read_parquet("../data/dfd.parquet")
+df = pd.read_parquet("../data/df1.parquet")
 df.head()
 # %%
 df["claimed"] = df["total_claim"].map(lambda x: 1 if x > 0 else 0)
 claims = smf.logit(
-    "claimed ~ log(Coverage)+Disaster*Post+Prem_before+log(Price)+log(Penetration)+log(GDP)+C(ti)",
+    "claimed ~ Disaster*Post+Prem_before+log(Price)+log(Penetration)+log(GDP)+C(ti)",
     data=df[(df["Neighbor"] == 0)],
 ).fit()
 
@@ -37,7 +37,7 @@ treated = df[df["Neighbor"] == 0].copy()
 treated["Post"] = -treated["Post"]
 treated["renew"] = treated["下年保单号"].map(lambda x: 1 if x else 0)
 renew = smf.logit(
-    "renew ~ log(Coverage)+Disaster*Post+Prem_before+log(Price)+log(Penetration)+log(GDP)+C(ti)",
+    "renew ~ Disaster*Post+Prem_before+log(Price)+log(Penetration)+log(GDP)+C(ti)",
     data=treated,
 ).fit()
 renew.summary()

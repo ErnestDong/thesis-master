@@ -9,11 +9,12 @@ from sqlalchemy import create_engine
 sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (8, 6)})
 
 # %%
-
-df = pd.read_parquet("../data/dfd.parquet")
+df = pd.read_parquet("../data/df1.parquet")
 df["历史投保"] = df["上年保单号"].map(lambda x: 1 if x else 0)
 df = df[(df["t"] > 1999) & (df["t"] < 2014)]
 df["ti"] = df["t"].astype(str)
+df["累计降水量"] = df["累计降水量"] / 5
+
 df.head()
 
 # %%
@@ -59,7 +60,7 @@ desc.drop(columns=["25%", "75%"], inplace=True)
 desc.to_latex("../lib/table/desc.tex", float_format="%.2f")
 
 # %%
-tmp = df[(df["Disaster"] == 1)]["累计降水量"] / 5
+tmp = df[(df["Disaster"] == 1)]["累计降水量"]
 tmp.name = "极端降水量"
 fig, ax = plt.subplots(figsize=(6.4, 4.8))
 sns.histplot(tmp[tmp < 600], ax=ax)

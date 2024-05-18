@@ -25,7 +25,7 @@ engine = create_engine("clickhouse+native://localhost/thesis")
 log = np.log
 sns.set_theme(style="white")
 # original_df = pd.read_sql("ols_ups_far", engine)
-original_df = pd.read_parquet("../data/df.parquet")
+original_df = pd.read_parquet("../data/df1.parquet")
 df = original_df.copy()
 df.head()
 # %%
