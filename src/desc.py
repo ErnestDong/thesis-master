@@ -61,25 +61,32 @@ desc.to_latex("../lib/table/desc.tex", float_format="%.2f")
 
 # %%
 tmp = df[(df["Disaster"] == 1)]["累计降水量"]
-tmp.name = "极端降水量"
+tmp.name = "家庭经历的24h极端降水量(mm)"
+
 fig, ax = plt.subplots(figsize=(6.4, 4.8))
-sns.histplot(tmp[tmp < 600], ax=ax)
+p = sns.histplot(tmp[tmp < 600], ax=ax)
+p.set_ylabel("家庭数")
 fig.savefig("../lib/img/precip.png")
 # %%
 tmp2 = df["保险起期"]
 fig, ax = plt.subplots(figsize=(6.4, 4.8))
-sns.histplot(tmp2, ax=ax)
+p = sns.histplot(tmp2, ax=ax)
+p.set_ylabel("家庭数")
 fig.savefig("../img/insurance.png")
 # %%
 tmp2 = df["distance"]
+tmp2.name = "家庭到最近的气象站距离(km)"
 fig, ax = plt.subplots(figsize=(6.4, 4.8))
-sns.histplot(tmp2, ax=ax)
+p = sns.histplot(tmp2, ax=ax)
+p.set_ylabel("家庭数")
 fig.savefig("../lib/img/olsdistance.png")
 # %%
 tmp2 = df["Coverage"]
+tmp2.name = "保额(元)"
 fig, ax = plt.subplots(figsize=(6.4, 4.8))
 plt.xscale("log")
-sns.histplot(tmp2, ax=ax)
+p = sns.histplot(tmp2, ax=ax)
+p.set_ylabel("家庭数")
 fig.savefig("../lib/img/coverage.png")
 # %%
 
