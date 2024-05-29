@@ -1,5 +1,5 @@
 \documentclass[UTF8, oneside, fontset=mac]{pkuthss}
-\usepackage[backend = biber, style = gb7714-2015ay,sortcites,sorting=ynt, doi=false, url=false]{biblatex}
+\usepackage[backend = biber, style = gb7714-2015ay, sortcites, doi=false, url=false,sortlocale=zh__pinyin]{biblatex}
 \usepackage{ntheorem}
 \usepackage{tabularx}
 \usepackage{longtable,multirow,booktabs}
@@ -25,7 +25,7 @@
 	etitle = {The Impact of Extreme Weather Shock on Household Property Insurance Demand},
 	cauthor = {董晨阳}, eauthor = {Chenyang Dong}, date = {\today},
 	studentid = {2201211201}, school = {经济学院},
-	cmajor = {保险学}, emajor = {Insurance},
+	cmajor = {保险硕士}, emajor = {Insurance},
 	direction = {保险学}, mentorlines = {1},
 	cmentor = {刘新立},
 	ementor = {Xinli Liu},
@@ -49,6 +49,7 @@
 \include{chap/abs}
 \tableofcontents
 \mainmatter
+\newrefcontext[sorting=ynt]
 \include{chap/chap1}
 \include{chap/chap2}
 \include{chap/chap3}
@@ -56,11 +57,10 @@
 \include{chap/chap4}
 \appendix
 \nocite{*}
-\newrefcontext[sorting=nyt]
+\newrefcontext[sorting=gb7714-2015]
 \printbibliography[heading = bibintoc, title = {参考文献}]
 % \include{chap/encl1}
 \backmatter
 \ifblind\else\include{chap/ack}\fi
 \include{chap/origin}
 \end{document}
-%
