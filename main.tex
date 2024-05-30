@@ -1,11 +1,12 @@
-\documentclass[UTF8, oneside, fontset=mac]{pkuthss}
-\usepackage[backend = biber, style = gb7714-2015ay, sortcites, doi=false, url=false,sortlocale=zh__pinyin]{biblatex}
+\documentclass[UTF8, oneside]{pkuthss}
+\usepackage[backend = biber, style = gb7714-2015ay, doi=false, url=false, sorting=ynt]{biblatex}
 \usepackage{ntheorem}
 \usepackage{tabularx}
 \usepackage{longtable,multirow,booktabs}
 \usepackage{float,caption}
 \usepackage{fontspec}
 \usepackage{rotating}
+\usepackage{pdfpages}
 \usepackage[perpage]{footmisc}
 \theoremseparator{:}
 \newtheorem{hyp}{假说}
@@ -23,10 +24,10 @@
 	thesiscover = {硕士学位论文},degreetype={2},
 	ctitle = {极端天气冲击对家财险需求的影响——以极端降水为例},
 	etitle = {The Impact of Extreme Weather Shock on Household Property Insurance Demand},
-	cauthor = {董晨阳}, eauthor = {Chenyang Dong}, date = {\today},
+	cauthor = {董晨阳}, eauthor = {Chenyang Dong}, date = {二〇二四年五月},
 	studentid = {2201211201}, school = {经济学院},
 	cmajor = {保险硕士}, emajor = {Insurance},
-	direction = {保险学}, mentorlines = {1},
+	direction = {不区分研究方向}, mentorlines = {1},
 	cmentor = {刘新立},
 	ementor = {Xinli Liu},
 	ckeywords = {极端天气；家财险需求；风险感知；保险市场},
@@ -63,4 +64,5 @@
 \backmatter
 \ifblind\else\include{chap/ack}\fi
 \include{chap/origin}
+\includepdf{lib/zblwcns_2201211201.pdf}
 \end{document}
