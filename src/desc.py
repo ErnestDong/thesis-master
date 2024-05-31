@@ -145,3 +145,18 @@ plt.figure(figsize=(8, 4))
 sns.lineplot(data=tmp, x="Quarter", y="Coverage", hue="Category")
 plt.savefig("../lib/img/robust.png")
 # %%
+df = pd.read_excel(
+    "../data/全球_保险损失金额_2012价_地震.xlsx", skipfooter=2, index_col=0
+)
+
+
+# %%
+sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (18, 6)})
+plt.figure(figsize=(8, 4))
+dfn = df[df.index.year > 1990].copy()
+dfn.index = dfn.index.year
+p = dfn.plot(kind="bar", stacked=True)
+p.set_xlabel(None)
+p.set_ylabel("损失金额(十亿美元)")
+plt.savefig("../img/disaster.png")
+# %%

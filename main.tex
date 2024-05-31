@@ -1,4 +1,4 @@
-\documentclass[UTF8, oneside]{pkuthss}
+\documentclass[UTF8, oneside,fontset=mac]{pkuthss}
 \usepackage[backend = biber, style = gb7714-2015ay, doi=false, url=false, sorting=ynt]{biblatex}
 \usepackage{ntheorem}
 \usepackage{tabularx}
@@ -40,7 +40,8 @@
 \begin{document}
 \frontmatter
 \pagestyle{empty}
-\ifblind\makeblind\else\maketitle\fi
+% \ifblind\makeblind\else\maketitle\fi
+\includepdf{lib/header.pdf}
 % \clearpage
 \include{chap/copy}
 \clearpage

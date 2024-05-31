@@ -88,9 +88,11 @@ res = pd.DataFrame(
 res.set_index("region", inplace=True)
 res = res.T
 # %%
-
+sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (8, 6)})
 fig, ax = plt.subplots()
-sns.lineplot(data=res, ax=ax)
+sns.barplot(data=res.stack().reset_index(), ax=ax, x="level_0", y=0, hue="region")
 ax.set_yscale("log")
+ax.set_ylabel("平均保额(元)")
+ax.set_xlabel(None)
 plt.savefig("../lib/img/covbyregion.png")
 # %%
