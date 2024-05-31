@@ -1,4 +1,5 @@
 # %%
+from matplotlib.pylab import f
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -59,10 +60,15 @@ def tests(n=100, treated="Neighbor"):
 
 
 results = {}
+res = {"Neighbor": 0.247, "Disaster": -0.187}
 for treat in ["Neighbor", "Disaster"]:
+    plt.clf()
     data = tests(500, treat)
     results[treat] = data[[f"{treat}:Post", f"{treat}"]]
-
-sns.kdeplot(pd.concat(results.values()))
-plt.savefig("../lib/img/randomtest.png")
+    tmp = results[treat][f"{treat}:Post"]
+    tmp.name = f"{treat}$\\times$Post"
+    p = sns.kdeplot(tmp)
+    p.axvline(0, color="red")
+    p.axvline(res[treat], color="green", linestyle="--")
+    plt.savefig(f"../lib/img/random_{treat}.png")
 # %%

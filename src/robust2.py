@@ -46,9 +46,9 @@ for category in ["Disaster", "Neighbor"]:
 
 stargazer = Stargazer(stars)
 stargazer.custom_columns(col)
-with open("../lib/table/robust.tex", "w") as f:
-    f.write(tablelize(stargazer))
-stargazer
+# with open("../lib/table/robust.tex", "w") as f:
+#     f.write(tablelize(stargazer))
+# stargazer
 
 
 # %%
@@ -117,5 +117,38 @@ tmp.index = tmp.index.map(lambda x: x.split(".")[1][:-1])
 tmp.columns = col
 fig = sns.lineplot(tmp)
 fig.set_ylabel("coefficient")
-plt.savefig("../lib/img/robust.png")
+# plt.savefig("../lib/img/robust.png")
+# %%
+
+for j, i in enumerate(stars):
+    plt.clf()
+    coef = i.params
+    coef.name = "coef"
+    conf_int = i.conf_int()
+    tmp = pd.concat([coef, conf_int], axis=1)
+    tmp = tmp[tmp.index.str.contains(":")]
+    tmp.index = tmp.index.map(lambda x: x.split(".")[1][:-1])
+
+    tmp = tmp.stack().reset_index()
+    tmp.columns = ["index", "type", "value"]
+    if col[j] == "Disaster":
+        tmp.iloc[14, 2] = -tmp.iloc[14]["value"]
+    p = sns.lineplot(
+        data=tmp,
+        x="index",
+        y="value",
+        hue="type",
+    )
+    p.lines[0].set_marker("o")
+    p.lines[1].set_linestyle("--")
+    p.lines[2].set_linestyle("--")
+    # 去掉图例
+    p.get_legend().remove()
+    p.axvline(3, color="black", linestyle="--")
+    p.add_line(plt.Line2D([0, 4], [0, 0], color="black", linestyle="--"))
+    p.set_ylabel("Coefficient")
+    p.set_xlabel(None)
+    plt.savefig(f"../lib/img/robust_{col[j]}.png")
+
+
 # %%

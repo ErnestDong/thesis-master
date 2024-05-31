@@ -73,12 +73,18 @@
 \section{稳健性检验}
 \subsection{平行趋势检验}
 
-为了验证DID实证结果的稳健性，需要进行平行趋势检验。表\ref{tab:robust}展示了平行趋势检验的结果，并可视化如图\ref{fig:robust}。本文分别将实验组设置为灾区和近灾区($\text{Treat}=\text{Disaster}$以及$\text{Treat}=\text{Neighbor}$)，对极端天气事件发生前四年的保额进行回归。回归结果显示交互项的系数都不显著，这表明在极端天气事件发生前，实验组和对照组的保额水平基本是平行的，满足平行趋势假设，可以通过DID方法来估计极端天气事件对家财险需求的影响。
+为了验证DID实证结果的稳健性，需要进行平行趋势检验。表\ref{tab:robust}展示了平行趋势检验的结果，并可视化如图\ref{fig:robust}和图\ref{fig:robust2}。本文分别将实验组设置为灾区和近灾区($\text{Treat}=\text{Disaster}$以及$\text{Treat}=\text{Neighbor}$)，对极端天气事件发生前四年的保额进行回归。回归结果显示交互项的系数都不显著，这表明在极端天气事件发生前，实验组和对照组的保额水平基本是平行的，满足平行趋势假设，可以通过DID方法来估计极端天气事件对家财险需求的影响。
 % 唯一表现出显著性的部分是在灾区受灾前90天内(一个季度)的保额，这可能是因为20年一遇的极端降水往往是持续较久的，灾区居民达到20年一遇的门槛前已经开始感知到风险，从而提前购买了保险。
 
 \begin{figure}[H]
-    \includegraphics[width=\linewidth]{lib/img/robust.png}
-    \caption{平行趋势检验}\label{fig:robust}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\linewidth]{lib/img/robust_Disaster.png}
+        \caption{灾区平行趋势检验}\label{fig:robust}
+    \end{minipage}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\linewidth]{lib/img/robust_Neighbor.png}
+        \caption{近灾区平行趋势检验}\label{fig:robust2}
+    \end{minipage}
 \end{figure}
 \begin{table}[H]
     \centering
@@ -88,10 +94,16 @@
 \end{table}
 
 \subsection{安慰剂检验}
-为排除其他潜在政策和遗漏变量等对回归结果的干扰，本文参考\citet{CYJJ202104009}随机虚构处理组，将 Neighbor 和 Disaster 的 DID 随机分组分配重复 500 次，结果如图\ref{fig:randomtest}所示。随机分配结果的所有系数估计值大体呈均值为 0 的正态分布，说明实验结果不是由于其他潜在政策或遗漏变量引起的，而是由于极端天气事件的影响。
+为排除其他潜在政策和遗漏变量等对回归结果的干扰，本文参考\citet{CYJJ202104009}随机虚构处理组，将 Neighbor 和 Disaster 的 DID 随机分组分配重复 500 次，结果如图\ref{fig:randomtest1}及图\ref{fig:randomtest2}所示。随机分配结果的所有系数估计值大体呈均值为 0 的正态分布，且距离真实值偏差较大，说明实验结果不是由于其他潜在政策或遗漏变量引起的，而是由于极端天气事件的影响。
 \begin{figure}[H]
-    \includegraphics[width=\linewidth]{lib/img/randomtest.png}
-    \caption{安慰剂检验}\label{fig:randomtest}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\linewidth]{lib/img/random_Disaster.png}
+        \caption{灾区安慰剂检验}\label{fig:randomtest1}
+    \end{minipage}
+    \begin{minipage}{0.48\linewidth}
+        \includegraphics[width=\linewidth]{lib/img/random_Neighbor.png}
+        \caption{近灾区安慰剂检验}\label{fig:randomtest2}
+    \end{minipage}
 \end{figure}
 
 \subsection{其他稳健性检验}
