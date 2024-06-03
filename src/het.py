@@ -88,11 +88,16 @@ res = pd.DataFrame(
 res.set_index("region", inplace=True)
 res = res.T
 # %%
+cmap = sns.cubehelix_palette(2)
+sns.set_palette(cmap)
+
 sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (8, 6)})
+plt.clf()
 fig, ax = plt.subplots()
-sns.barplot(data=res.stack().reset_index(), ax=ax, x="level_0", y=0, hue="region")
-ax.set_yscale("log")
-ax.set_ylabel("平均保额(元)")
-ax.set_xlabel(None)
+p=sns.barplot(data=res.stack().reset_index(), ax=ax, x="level_0", y=0, hue="region")
+p.set_yscale("log")
+p.set_ylabel("平均保额(元)")
+p.set_xlabel(None)
+
 plt.savefig("../lib/img/covbyregion.png")
 # %%

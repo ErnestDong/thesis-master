@@ -7,7 +7,6 @@ from sqlalchemy import create_engine
 
 # sns.set_theme(style="white")
 sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (8, 6)})
-
 # %%
 df = pd.read_parquet("../data/df1.parquet")
 df["历史投保"] = df["上年保单号"].map(lambda x: 1 if x else 0)
@@ -152,10 +151,12 @@ df = pd.read_excel(
 
 # %%
 sns.set_style("white", {"font.sans-serif": ["STHeiti"], "figsize": (18, 6)})
+cmap = sns.cubehelix_palette(8,as_cmap=True, reverse=True)
+# cmap=sns.light_palette("navy", reverse=True, as_cmap=True)
 plt.figure(figsize=(8, 4))
 dfn = df[df.index.year > 1990].copy()
 dfn.index = dfn.index.year
-p = dfn.plot(kind="bar", stacked=True)
+p = dfn.plot(kind="bar", stacked=True, cmap=cmap)
 p.set_xlabel(None)
 p.set_ylabel("损失金额(十亿美元)")
 plt.savefig("../img/disaster.png")
